@@ -1,5 +1,6 @@
 # toronto-com-ttcriders-archive
-Archive TTCriders articles on Toronto.com
+Archive TTCriders articles on Toronto.com.
+The list of webpages was obtained from a google search: `site:toronto.com "ttcriders"`
 
 # Steps to create repo
 Follow [Scrapy tutorial](https://docs.scrapy.org/en/latest/intro/tutorial.html).
