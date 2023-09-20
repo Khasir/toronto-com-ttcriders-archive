@@ -25,11 +25,17 @@ class TorontoComSpider(scrapy.Spider):
         os.makedirs(self.output_dir, exist_ok=True)
         with open(self.input_file, 'r', encoding='utf-8') as file:
             for line in file:
-                yield scrapy.Request(url=line.strip(), callback=self.parse)
+                line = line.strip()
+                if not line:
+                    continue
+                yield scrapy.Request(url=line, callback=self.parse)
 
     def parse(self, response):
         # Save HTML
-        pagename: str = os.path.split(response.url)[1]
+        # pagename: str = os.path.split(response.url)[1]
+        pagename = response.url.split('/')[-2]
+        if not pagename.endswith(".html") or pagename.endswith(".htm"):
+            pagename += ".html"
         filename = f"{self.output_dir}/{pagename}"
         Path(filename).write_bytes(response.body)
         self.log(f"Saved HTML to: {filename}")
@@ -40,6 +46,5 @@ class TorontoComSpider(scrapy.Spider):
         if period_index >= 0:
             pdf_name = '.'.join(pagename.split('.')[:-1]) + ".pdf"
         filename = f"{self.output_dir}/{pdf_name}"
-        # self.convert_html_to_pdf(response.body, filename)
         pdfkit.from_string(str(response.body, encoding='utf-8'), filename)
         self.log(f"Saved PDF to: {filename}")
